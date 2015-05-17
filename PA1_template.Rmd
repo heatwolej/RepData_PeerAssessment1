@@ -64,9 +64,9 @@ medianFormat <- format(medianDay, big.mark=",")
 Data was reported in 5-minute intervals throughout the 24-hour day, yielding a total of `r 24*12` intervals of data per day.  In order to plot an average day, an average number of steps must be found for each interval throughout the study period.  This is accomplished with the following R code.
 
 ```{r}
-  intervalMeans <- tapply(workingData$steps, workingData$interval, mean, na.rm=TRUE)
-  uniqueInterval <- unique(workingData$interval)
-  intervalMeans <- cbind(uniqueInterval, intervalMeans)
+intervalMeans <- tapply(workingData$steps, workingData$interval, mean, na.rm=TRUE)
+uniqueInterval <- unique(workingData$interval)
+intervalMeans <- cbind(uniqueInterval, intervalMeans)
 ```
 The `tapply` function does the hard work in finding the mean number of steps in each interval throughout the study period.  The other two statements are used to bind the interval identifiers to the means data in preparation for producing a plot.
 
@@ -75,6 +75,16 @@ The basic `plot` is produced below, with type = 'l' allowing R to connect the in
 ```{r}
 plot(intervalMeans, type="l", main = "Average #steps per interval", xlab="Intervals", ylab = "Mean number of steps")
 ```
+
+The busiest period appears to be mid-morning. The R code below will indicate which interval.
+
+```{r}
+maxSteps <- max(intervalMeans[,2])
+maxIndex <- which(intervalMeans[,2] == maxSteps)
+maxPeriod <- intervalMeans[maxIndex,1]
+```
+
+The busiest period is at `r maxPeriod`
 
 ## Imputing missing values
 
@@ -91,7 +101,7 @@ colnames(intervalMeans)[1] <- "interval"
 ```{r}
 # Essentialy a "join" operation, merge the interval means data into the working data set
 dataReplace <- merge(x=workingData, y=intervalMeans, by="interval", all.x=TRUE)
-# step through data fram and replace all NA values for steps with means for that interval
+# step through data frame and replace all NA values for steps with means for that interval
 for (i in 1:nrow(dataReplace)) if (is.na(dataReplace[i,2])) dataReplace[i,2] <- dataReplace[i,4]
 ```
 
@@ -102,7 +112,7 @@ adjDailySums <- tapply(dataReplace$steps, dataReplace$date, FUN=sum)
 adjMeanDay <- mean(adjDailySums, na.rm=TRUE)
 adjMedianDay <- median(adjDailySums, na.rm=TRUE)
 ```
-Now we are ready to take a look at the same plots as above, except with missing values imputed.  This is what the new histogram looks like after missing data has been replaced with interval means.
+Now we are ready to take a look at the same plot as above, except with missing values imputed.  This is what the new histogram looks like after missing data has been replaced with interval means.
 
 ```{r}
 hist(adjDailySums, breaks=12, main="Histogram of Steps Per Day After Missing Data Substitution", xlab="Steps per Day", ylab="Frequency")

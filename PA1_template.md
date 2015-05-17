@@ -64,9 +64,9 @@ Data was reported in 5-minute intervals throughout the 24-hour day, yielding a t
 
 
 ```r
-  intervalMeans <- tapply(workingData$steps, workingData$interval, mean, na.rm=TRUE)
-  uniqueInterval <- unique(workingData$interval)
-  intervalMeans <- cbind(uniqueInterval, intervalMeans)
+intervalMeans <- tapply(workingData$steps, workingData$interval, mean, na.rm=TRUE)
+uniqueInterval <- unique(workingData$interval)
+intervalMeans <- cbind(uniqueInterval, intervalMeans)
 ```
 The `tapply` function does the hard work in finding the mean number of steps in each interval throughout the study period.  The other two statements are used to bind the interval identifiers to the means data in preparation for producing a plot.
 
@@ -78,6 +78,17 @@ plot(intervalMeans, type="l", main = "Average #steps per interval", xlab="Interv
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-7-1.png) 
+
+The busiest period appears to be mid-morning. The R code below will indicate which interval.
+
+
+```r
+maxSteps <- max(intervalMeans[,2])
+maxIndex <- which(intervalMeans[,2] == maxSteps)
+maxPeriod <- intervalMeans[maxIndex,1]
+```
+
+The busiest period is at 835
 
 ## Imputing missing values
 
@@ -96,7 +107,7 @@ colnames(intervalMeans)[1] <- "interval"
 ```r
 # Essentialy a "join" operation, merge the interval means data into the working data set
 dataReplace <- merge(x=workingData, y=intervalMeans, by="interval", all.x=TRUE)
-# step through data fram and replace all NA values for steps with means for that interval
+# step through data frame and replace all NA values for steps with means for that interval
 for (i in 1:nrow(dataReplace)) if (is.na(dataReplace[i,2])) dataReplace[i,2] <- dataReplace[i,4]
 ```
 
@@ -108,14 +119,14 @@ adjDailySums <- tapply(dataReplace$steps, dataReplace$date, FUN=sum)
 adjMeanDay <- mean(adjDailySums, na.rm=TRUE)
 adjMedianDay <- median(adjDailySums, na.rm=TRUE)
 ```
-Now we are ready to take a look at the same plots as above, except with missing values imputed.  This is what the new histogram looks like after missing data has been replaced with interval means.
+Now we are ready to take a look at the same plot as above, except with missing values imputed.  This is what the new histogram looks like after missing data has been replaced with interval means.
 
 
 ```r
 hist(adjDailySums, breaks=12, main="Histogram of Steps Per Day After Missing Data Substitution", xlab="Steps per Day", ylab="Frequency")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-11-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-12-1.png) 
 
 The observation is that the graph seems to have the same shape as the one produced with raw data, except that there is a much bigger spike in the 10,000 - 12,000 steps bucket.
 
@@ -181,6 +192,6 @@ g <- ggplot(finalSummary, aes(interval, steps))
 g + geom_line() + facet_grid(. ~ factorWkdy) + ggtitle("Average Steps per 5-minute Interval - Separated by Type of Day") +  xlab("Interval") + ylab("Average Steps")
 ```
 
-![](PA1_template_files/figure-html/unnamed-chunk-15-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-16-1.png) 
 
 While the weekday graph shows a higher level of activity during the 8:00 a.m. hour, the weekend graph shows a higher level of activity throughout the remainder of the day.
