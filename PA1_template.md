@@ -1,9 +1,4 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 + Author: Jeff Heatwole
 + Date: May 17, 2015
 
@@ -48,7 +43,7 @@ dailySums <- tapply(workingData$steps, workingData$date, FUN=sum)
 hist(dailySums, breaks=12, main="Histogram of Steps Per Day", xlab="Steps per Day", ylab="Frequency")
 ```
 
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
 
 With the code snippet below, standard R functions can determine the `mean` and `median` number of steps per day.
 
@@ -82,7 +77,7 @@ The basic `plot` is produced below, with type = 'l' allowing R to connect the in
 plot(intervalMeans, type="l", main = "Average #steps per interval", xlab="Intervals", ylab = "Mean number of steps")
 ```
 
-![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-7-1.png) 
 
 ## Imputing missing values
 
@@ -120,7 +115,7 @@ Now we are ready to take a look at the same plots as above, except with missing 
 hist(adjDailySums, breaks=12, main="Histogram of Steps Per Day After Missing Data Substitution", xlab="Steps per Day", ylab="Frequency")
 ```
 
-![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-11-1.png) 
 
 The observation is that the graph seems to have the same shape as the one produced with raw data, except that there is a much bigger spike in the 10,000 - 12,000 steps bucket.
 
@@ -186,6 +181,6 @@ g <- ggplot(finalSummary, aes(interval, steps))
 g + geom_line() + facet_grid(. ~ factorWkdy) + ggtitle("Average Steps per 5-minute Interval - Separated by Type of Day") +  xlab("Interval") + ylab("Average Steps")
 ```
 
-![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15-1.png) 
+![](PA1_template_files/figure-html/unnamed-chunk-15-1.png) 
 
 While the weekday graph shows a higher level of activity during the 8:00 a.m. hour, the weekend graph shows a higher level of activity throughout the remainder of the day.
